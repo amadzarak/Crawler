@@ -1,4 +1,4 @@
-I am currently working on a Sentiment Analysis program, however, as I was writing the code I wanted to have more control over the inputs I put into the model. My Sentiment Analysis project was related to the coverage the U.S politicians received in the news. There are many great APIs, and recently I learned about [[https://newscatcherapi.com/free-news-api|newscatcher]]. There are others such as: [[newsdata.io]], [[newsapi.org]], [[webz.io]], [[gnews.io]], and [[infomedia.org]]. 
+I am currently working on a Sentiment Analysis program, however, as I was writing the code I wanted to have more control over the inputs I put into the model. My Sentiment Analysis project was related to the coverage the U.S politicians received in the news. There are many great APIs, and recently I learned about [https://newscatcherapi.com/free-news-api|newscatcher]. There are others such as: [newsdata.io], [newsapi.org], [webz.io], [gnews.io], and [infomedia.org]. 
 
 I decided that in order to have the most control, I would need to collect the data myself. Also, I felt that because many of the APIs limit the amount of calls you can make in a free plan, if did choose to use one of the APIs I would need to pay for a more premium plan. Unfortunately, I felt that this was out of my budget, and I needed a workaround. Creating the WebCrawler was a great undertaking, and I truly do have an appreciation for those of us that are willing to offer their APIs as a service. 
 
@@ -97,9 +97,9 @@ def straightCrawl(url):
 ```
 
 I had run the program just one time, and acquired a huge list of over 26,700 unique URLs.
-![[Pasted image 20220403221137.png]]
+!()[https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220403221137.png?raw=true]
 
 With all these links, I needed an efficient way to store the data and use it. I save my final output as a  ```.csv``` file, which I then saved to a database using SQLite. 
 
-![[Pasted image 20220403204309.png]]
+!()[https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220403204309.png?raw=true]
 
