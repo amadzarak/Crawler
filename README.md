@@ -1,4 +1,4 @@
-I am currently working on a Sentiment Analysis program, however, as I was writing the code I wanted to have more control over the inputs I put into the model. My Sentiment Analysis project was related to the coverage the U.S politicians received in the news. There are many great APIs, and recently I learned about [[https://newscatcherapi.com/free-news-api|newscatcher]]. There are others such as: [[newsdata.io]], [[newsapi.org]], [[webz.io]], [[gnews.io]], and [[infomedia.org]]. 
+I am currently working on a Sentiment Analysis program, however, as I was writing the code I wanted to have more control over the inputs I put into the model. My Sentiment Analysis project was related to the coverage the U.S politicians received in the news. There are many great APIs, and recently I learned about [Newscatcher](https://newscatcherapi.com/free-news-api). There are others such as: [newsdata.io](https://newsdata.io/), [newsapi.org](https://newsapi.org/), [webz.io](https://webz.io/), [gnews.io](https://gnews.io/), and [infomedia.org](https://infomedia.org/). 
 
 I decided that in order to have the most control, I would need to collect the data myself. Also, I felt that because many of the APIs limit the amount of calls you can make in a free plan, if did choose to use one of the APIs I would need to pay for a more premium plan. Unfortunately, I felt that this was out of my budget, and I needed a workaround. Creating the WebCrawler was a great undertaking, and I truly do have an appreciation for those of us that are willing to offer their APIs as a service. 
 
@@ -96,11 +96,11 @@ def straightCrawl(url):
     return linkFilter
 ```
 I had run the program just one time, and acquired a huge list of over 26,700 unique URLs.
-![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted image 20220403221137.png?raw=true)
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220403221137.png?raw=true)
 
 With all these links, I needed an efficient way to store the data and use it. I save my final output as a  ```.csv``` file, which I then saved to a database using SQLite. 
 
-![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted image 20220404161215.png?raw=true)
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220404161215.png?raw=true)
 
 We can use the URLs that are contained within our set, and insert them into our first table called `UnprocessedLinks`. This table will be where any incoming links will be stored as they get ready for processing.
 
@@ -188,6 +188,7 @@ Initially, running this script took an extremely long time, and I knew for a fac
 Unfortunately, the global interpreter lock prevents multiple threads of Python code from running. Therefore, while multithreading on Python is not perfect, I can still take speed up the program by using multiprocessing to bypass the GIL.
 
 ![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220404194122.png?raw=true)
+
 Looking at the task manager we can clearly see that there is only only thread of the program currently running. I updated the code to use ```grequests``` which is a combination of ```gevent``` and the ```requests``` library.
 
 With multithreading, I also had to bear in mind that SQLite, does not allow multi operations to occur on a database at the same time.
@@ -249,10 +250,13 @@ if __name__ == "__main__":
 
 
 After updating the code, we can see that the program was running asychronously, and I could clearly notice an increase in speed as  I was scraping content.
+
 ![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220404194031.png?raw=true)
+
 ![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220404212252.png?raw=true)
 
 Using Viz Tracer, one can visualize the asynchronous nature of the program. While remaining in the same thread, the program is still able to run different processes at the same time.
+
 ![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220404221520.png?raw=true)
 
 
@@ -292,7 +296,9 @@ print(dataset[['Parsed', 'Param']]) #Return 10 rows of data
 ```
 
 Next I separated out the columns, and split them into training data and test data.
+
 ![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220405193454.png?raw=true)
+
 ```python  
   
 z = dataset['URL']  
@@ -338,6 +344,7 @@ pickle.dump(model, open(mod_file, 'wb'))
 
 # Testing the Content Filter
 In order to test the filter, I copied the contents of a news article that was not contained in our training data.
+
 ![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220406171057.png?raw=true)
 
 ```python
