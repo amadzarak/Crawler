@@ -95,13 +95,12 @@ def straightCrawl(url):
  linkFilter.append(x)  
     return linkFilter
 ```
-
 I had run the program just one time, and acquired a huge list of over 26,700 unique URLs.
-![[Pasted image 20220403221137.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted image 20220403221137.png?raw=true)
 
 With all these links, I needed an efficient way to store the data and use it. I save my final output as a  ```.csv``` file, which I then saved to a database using SQLite. 
 
-![[Pasted image 20220404161215.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted image 20220404161215.png?raw=true)
 
 We can use the URLs that are contained within our set, and insert them into our first table called `UnprocessedLinks`. This table will be where any incoming links will be stored as they get ready for processing.
 
@@ -180,7 +179,7 @@ def retrievePTags(url):
     return bodyContent
 ```
 
-![[Pasted image 20220404144224.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220404144224.png?raw=true)
 
 We now have a large enough dataset that we can use in order for us to train out `contentUsefulness()` model. With the model trained, we can finally step aside and let the crawler script run completely on its own without any supervision.
 
@@ -188,7 +187,7 @@ We now have a large enough dataset that we can use in order for us to train out 
 Initially, running this script took an extremely long time, and I knew for a fact that if I continued running the program at its current pace it could potentially take days in order to scrape all the content I need. 
 Unfortunately, the global interpreter lock prevents multiple threads of Python code from running. Therefore, while multithreading on Python is not perfect, I can still take speed up the program by using multiprocessing to bypass the GIL.
 
-![[Pasted image 20220404194122.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220404194122.png?raw=true)
 Looking at the task manager we can clearly see that there is only only thread of the program currently running. I updated the code to use ```grequests``` which is a combination of ```gevent``` and the ```requests``` library.
 
 With multithreading, I also had to bear in mind that SQLite, does not allow multi operations to occur on a database at the same time.
@@ -250,11 +249,11 @@ if __name__ == "__main__":
 
 
 After updating the code, we can see that the program was running asychronously, and I could clearly notice an increase in speed as  I was scraping content.
-![[Pasted image 20220404194031.png]]
-![[Pasted image 20220404212252.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220404194031.png?raw=true)
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220404212252.png?raw=true)
 
 Using Viz Tracer, one can visualize the asynchronous nature of the program. While remaining in the same thread, the program is still able to run different processes at the same time.
-![[Pasted image 20220404221520.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220404221520.png?raw=true)
 
 
 ## Labeling the Data
@@ -271,7 +270,7 @@ There are three parameters that I will indicate.
 
 While there were 30,000 items I had to go through, it was actually a relatively simple process. Especially because the scraper has already saved almost 8,000 blank entries. This would include login pages, dead links etc.
 
-![[Pasted image 20220405033835.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220405033835.png?raw=true)
 After I had all the data labelled I could finally create the model.
 
 # Model
@@ -293,7 +292,7 @@ print(dataset[['Parsed', 'Param']]) #Return 10 rows of data
 ```
 
 Next I separated out the columns, and split them into training data and test data.
-![[Pasted image 20220405193454.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220405193454.png?raw=true)
 ```python  
   
 z = dataset['URL']  
@@ -339,7 +338,7 @@ pickle.dump(model, open(mod_file, 'wb'))
 
 # Testing the Content Filter
 In order to test the filter, I copied the contents of a news article that was not contained in our training data.
-![[Pasted image 20220406171057.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220406171057.png?raw=true)
 
 ```python
 from joblib import dump, load  
@@ -360,7 +359,7 @@ print(loaded_model.predict(loaded_vectorizer.transform(X_test)))
 ```
 
 I was pleasantly surprised with the output, because it was correct. Indeed, the content of this webpage would be useful.
-![[Pasted image 20220406170428.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220406170428.png?raw=true)
 
 Conversely, I wanted to test if it could detect whether content was useless.
 ```python
@@ -376,7 +375,7 @@ loaded_model = pickle.load(open('conteUsefulness.model', 'rb'))
 print(loaded_model.predict(loaded_vectorizer.transform(X_test)))
 ```
 
-![[Pasted image 20220406171236.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220406171236.png?raw=true)
 
 So we can now be assured that the model is running the way that it should be.
 One issue that I noticed was the model prefers its input in a certain way, I believe this has to do with the fact that the CSV file that the model was trained on had the data saved within square brackets and double quotes ( ```[" data "]``` ). So in order for the model to be useful within our overall program, we will need to make sure the data being passed into the function is in a format it likes. I will certainly take note of this issue the next time I train a model.
@@ -410,7 +409,7 @@ def usefulnessQuestioning(url):
 
 Before any link is written into our database, the content of the link is questioned. Using the model we created earlier, we are able to confirm whether or the the content on the link will be useful, before we even record it. Specifically, I did not want the scraper to go thru Terms and Conditions pages, or About pages, which did not contain the content that I was looking for. All those pages had boilerplate text that was not at all useful to me. After running the crawler with this functionality, I can confidently ascertain the content I am now retrieving is very much useful.
 
-![[Pasted image 20220406182541.png]]
+![](https://github.com/amadzarak/CrawlerForNLP/blob/main/Pasted%20image%2020220406182541.png?raw=true)
 
 
 # Concluding Thoughts
